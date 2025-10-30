@@ -1,0 +1,12 @@
+{
+  "extensions": {
+    ".jpg": "Images",
+    ".mp3": "Music",
+    ".mp4": "Videos",
+    ".pdf": "Documents",
+    ".png": "Images",
+    ".txt": "Documents",
+    ".zip": "Archives"
+  },
+  "defaultFolder": "Other"
+}
