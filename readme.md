@@ -273,4 +273,3 @@ By **Day 30**, you should be able to:
 > - Keep you accountable  
 > - Show employers your learning journey  
 
-**Want me to create a detailed Day 1 starter guide to get you going right now?**
