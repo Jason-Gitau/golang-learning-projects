@@ -2,11 +2,12 @@
 
 ## 🎯 What You've Accomplished
 
-You've completed **Week 1** of your 1-month Go learning path by building a **File Organizer CLI tool** that demonstrates all core Go concepts for beginners.
+You've completed **Week 1** of your 1-month Go learning path by building **TWO production-ready CLI tools** that demonstrate all core Go concepts for beginners.
 
-### Project: File Organizer CLI
+### Projects Completed
 
-**Location:** `C:\Users\Jason\Golang_lessons\week1-file-organizer\`
+#### Project 1: File Organizer CLI
+**Location:** `week1-projects/01-file-organizer/`
 
 A production-ready command-line tool that:
 - ✅ Organizes files into directories by file extension
@@ -15,6 +16,17 @@ A production-ready command-line tool that:
 - ✅ Provides helpful CLI interface with flags
 - ✅ Demonstrates proper error handling
 - ✅ Shows directory statistics and structure
+
+#### Project 2: URL Shortener CLI
+**Location:** `week1-projects/02-url-shortener/`
+
+A production-ready command-line tool that:
+- ✅ Creates shortened URLs with 6-character codes
+- ✅ Tracks visit counts for each shortened URL
+- ✅ Stores data persistently in JSON format
+- ✅ Provides statistics including compression ratio
+- ✅ Supports delete and list operations
+- ✅ Professional CLI interface with multiple commands
 
 ## 📚 Week 1 Learning Objectives (All Covered!)
 
@@ -36,24 +48,38 @@ A production-ready command-line tool that:
 - [x] **Command-Line Flags** - Using the flag package for CLI arguments
 - [x] **Real Project** - Building a complete, functional tool
 
-## 🏗️ Project Structure
+## 🏗️ Projects Structure
 
 ```
-week1-file-organizer/
-├── main.go                    # CLI entry point (170 lines)
-├── organizer/
-│   ├── organizer.go          # Core logic (160 lines)
-│   └── config.go             # JSON config (100 lines)
-├── utils/
-│   └── fileutils.go          # Utilities (220 lines)
-├── config.json               # Example configuration
-├── file-organizer.exe        # Compiled binary
-├── test_files/               # Test directory
-├── test_files2/              # Additional test directory
-└── README.md                 # Comprehensive documentation
+week1-projects/
+├── README.md                 # Overview of both projects
+├── WEEK1_SUMMARY.md         # This file
+│
+├── 01-file-organizer/
+│   ├── main.go              # CLI entry point (170 lines)
+│   ├── organizer/
+│   │   ├── organizer.go     # Core logic (160 lines)
+│   │   └── config.go        # JSON config (100 lines)
+│   ├── utils/
+│   │   └── fileutils.go     # Utilities (220 lines)
+│   ├── config.json          # Example configuration
+│   ├── README.md            # Full documentation
+│   ├── QUICK_START.md       # Quick start guide
+│   └── START_HERE.md        # Code reading guide
+│
+└── 02-url-shortener/
+    ├── main.go              # CLI entry point (170 lines)
+    ├── shortener/
+    │   └── shortener.go     # Core logic (280 lines)
+    ├── storage/
+    │   └── storage.go       # JSON persistence (180 lines)
+    ├── urls.json            # Data storage
+    ├── README.md            # Full documentation
+    ├── QUICK_START.md       # Quick start guide
+    └── START_HERE.md        # Code reading guide
 ```
 
-**Total Code:** ~650 lines of well-commented Go code
+**Total Code:** ~1,384 lines of well-commented Go code across 2 projects
 
 ## 🔑 Key Concepts Demonstrated
 
@@ -122,19 +148,19 @@ flag.Parse()
 ```
 **Learning:** Building user-friendly command-line tools
 
-## 🚀 How to Use the Project
+## 🚀 How to Use the Projects
 
-### Basic Commands
+### File Organizer - Basic Commands
 
 ```bash
 # Navigate to the project
-cd C:\Users\Jason\Golang_lessons\week1-file-organizer
+cd week1-projects/01-file-organizer
 
 # Dry run (preview without changes)
-./file-organizer.exe -source test_files -dry-run
+./file-organizer.exe -source ~/Downloads -dry-run
 
 # Organize files
-./file-organizer.exe -source test_files
+./file-organizer.exe -source ~/Downloads
 
 # Show help
 ./file-organizer.exe -help
@@ -146,9 +172,37 @@ cd C:\Users\Jason\Golang_lessons\week1-file-organizer
 ./file-organizer.exe -create-config -config myconfig.json
 ```
 
-### Build from Source
+### URL Shortener - Basic Commands
+
 ```bash
+# Navigate to the project
+cd week1-projects/02-url-shortener
+
+# Shorten a URL
+./url-shortener.exe shorten https://github.com/golang/go
+
+# List all shortened URLs
+./url-shortener.exe list
+
+# Get original URL
+./url-shortener.exe get abc123
+
+# View statistics
+./url-shortener.exe stats abc123
+
+# Delete a URL
+./url-shortener.exe delete abc123
+```
+
+### Build Both Projects
+```bash
+# Project 1
+cd week1-projects/01-file-organizer
 go build -o file-organizer.exe
+
+# Project 2
+cd ../02-url-shortener
+go build -o url-shortener.exe
 ```
 
 ## 📝 Code Quality Features
@@ -233,14 +287,14 @@ All features tested and working:
 
 ## 📊 Code Metrics
 
-| Metric | Value |
-|--------|-------|
-| Total Lines | ~650 |
-| Number of Files | 6 |
-| Packages | 3 (main, organizer, utils) |
-| Functions | 15+ |
-| Error Cases Handled | 10+ |
-| Test Scenarios | 5+ |
+| Metric | Project 1 | Project 2 | Total |
+|--------|-----------|-----------|-------|
+| Total Lines | 754 | 630 | 1,384 |
+| Number of Files | 6 | 5 | 11 |
+| Packages | 3 | 2 | 5 |
+| Functions | 15+ | 20+ | 35+ |
+| Error Cases Handled | 10+ | 15+ | 25+ |
+| Test Scenarios | 5+ | 5+ | 10+ |
 
 ## 🎯 Week 1 Checklist
 
@@ -271,15 +325,30 @@ You now have:
 
 ## 📚 Project Files Reference
 
-**To understand the code, read in this order:**
+### File Organizer - Reading Order
 
 1. **main.go** - Start here to understand the CLI flow
-2. **organizer/organizer.go** - Core logic with detailed explanations
+2. **organizer/organizer.go** - Core logic with structs, methods, maps
 3. **organizer/config.go** - JSON handling patterns
-4. **utils/fileutils.go** - Common file operations
+4. **utils/fileutils.go** - Common file operations and slices
 5. **README.md** - Full project documentation
 
+### URL Shortener - Reading Order
+
+1. **main.go** - Start here to understand the CLI flow
+2. **shortener/shortener.go** - Core logic with maps, slices, pointers
+3. **storage/storage.go** - JSON persistence and file I/O
+4. **README.md** - Full project documentation
+
 Each file has comments explaining Go concepts as they're used.
+
+### Individual START_HERE Files
+
+Each project has a `START_HERE.md` file that:
+- Guides you through the codebase
+- Explains what to focus on
+- Provides line number references
+- Shows reading order and navigation
 
 ---
 
@@ -287,12 +356,14 @@ Each file has comments explaining Go concepts as they're used.
 
 You've successfully completed **Week 1** of your Go learning journey by:
 
+✅ Building TWO production-ready CLI applications
 ✅ Learning all foundational Go concepts
-✅ Building a real, working CLI application
+✅ Demonstrating 35+ Go functions
+✅ Writing 1,384 lines of well-commented code
 ✅ Understanding error handling and file I/O
-✅ Creating organized, well-commented code
-✅ Implementing JSON configuration
-✅ Testing your application thoroughly
+✅ Creating organized, multi-package projects
+✅ Implementing JSON configuration and persistence
+✅ Testing both applications thoroughly
 
 **You're now ready to move to Week 2: Web Development & APIs!**
 
@@ -300,5 +371,6 @@ Keep pushing forward! 🚀
 
 ---
 
-*Last Updated: 2025-10-29*
-*Project Location: `C:\Users\Jason\Golang_lessons\week1-file-organizer\`*
+*Last Updated: 2025-10-30*
+*Project Location: `week1-projects/`*
+*Total Project Value: 2 complete CLI tools + comprehensive documentation*
