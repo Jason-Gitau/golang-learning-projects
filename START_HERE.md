@@ -424,19 +424,23 @@ Open browser to `http://localhost:8080/` for built-in test page!
 
 ---
 
-#### Project 7: Deep Research Agent
+#### Project 7: Deep Research Agent (Full-Stack Platform)
 📂 `week4-capstone/deep-research-agent/`
 
-**Advanced AI Agent System** - Intelligent research with multi-source analysis!
+**Complete Full-Stack Research Platform** - CLI + REST API + WebSocket + Web UI!
 
 **What it does:**
-- Deep research agent with intelligent planning
-- PDF and DOCX document processing
-- Web search and Wikipedia integration
-- Citation management (APA, MLA, Chicago)
-- Fact checking and verification
-- Multi-step research orchestration
-- Session persistence with SQLite
+- **CLI Interface**: 7 Cobra commands for terminal use
+- **REST API**: 14 endpoints with JWT authentication
+- **WebSocket**: Real-time research progress streaming
+- **Web UI**: Modern responsive single-page application
+- **Multi-User**: JWT auth with session isolation
+- **Research Engine**: Intelligent planning with 8 research tools
+- **Document Processing**: PDF and DOCX analysis
+- **Web Integration**: Search and Wikipedia
+- **Citations**: APA, MLA, Chicago formats
+- **Fact Checking**: Claim verification
+- **Session Management**: Persistent storage with SQLite
 
 **Tools Implemented (8):**
 1. **PDF Processor** - Extract text, search, metadata from PDFs
@@ -484,30 +488,44 @@ Open browser to `http://localhost:8080/` for built-in test page!
 **Quick start:**
 ```bash
 cd week4-capstone/deep-research-agent
+
+# Option 1: CLI Interface (Original)
 go run main.go help
-
-# Basic research
 go run main.go research "Go programming language history"
+go run main.go research "AI trends" --pdf research.pdf --depth deep
 
-# Research with documents
-go run main.go research "machine learning trends" --pdf research.pdf --docx notes.docx
+# Option 2: Start API Server + Web UI (NEW!)
+go run main.go serve --port 8080
+# Then open http://localhost:8080 in your browser
 
-# Deep research with all sources
-go run main.go research "climate change solutions" --depth deep --use-web --use-wikipedia
+# Option 3: Use REST API (NEW!)
+curl -X POST http://localhost:8080/api/v1/auth/register \
+  -d '{"email":"user@test.com","password":"Test123","name":"User"}'
 
-# Analyze document
-go run main.go document --pdf paper.pdf --summarize
-
-# Interactive mode
-go run main.go interactive
+curl -X POST http://localhost:8080/api/v1/research/start \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"query":"AI trends","depth":"medium"}'
 ```
 
-**Documentation (5 files, 4,578 lines):**
+**Documentation (12 files, 7,000+ lines):**
+
+**Core Documentation:**
 - `README.md` - Complete project documentation (734 lines)
 - `QUICK_START.md` - 5-minute getting started (409 lines)
 - `START_HERE.md` - Comprehensive learning guide with 9 tutorials (1,222 lines)
 - `TOOLS_GUIDE.md` - All 8 tools documented with examples (1,143 lines)
 - `ARCHITECTURE.md` - System architecture and design patterns (1,070 lines)
+
+**API & Authentication:**
+- `AUTH_GUIDE.md` - Complete authentication guide (700+ lines)
+- `AUTHENTICATION_IMPLEMENTATION.md` - Technical implementation (450+ lines)
+
+**Web UI:**
+- `web/README.md` - Web interface documentation
+- `web/INTEGRATION_GUIDE.md` - API integration guide
+- `web/QUICK_START.md` - Web UI setup
+- `web/UI_MOCKUP.md` - Visual mockups
+- `web/SUMMARY.md` - Project overview
 
 **Example Research Flow:**
 1. User asks: "What are the latest trends in AI?"
@@ -519,14 +537,16 @@ go run main.go interactive
 7. Results saved to database session
 
 **Stats:**
-- 44 files created
-- 39 Go source files
-- ~5,200 lines of code
-- ~4,600 lines of documentation
-- 9 Go packages
+- 84 files total (40 new files for API/UI)
+- 54 Go source files
+- ~13,200 lines of code
+- ~7,000 lines of documentation
+- 18 Go packages
+- 14 REST API endpoints + 1 WebSocket
 - 8 research tools
 - 7 CLI commands
-- 3 research depth levels
+- Modern web interface (HTML/CSS/JS)
+- JWT authentication & multi-user support
 
 ---
 
