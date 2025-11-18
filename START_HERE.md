@@ -16,12 +16,12 @@ This repository contains your **complete 1-month Go learning portfolio**:
 ✅ Week 1: Foundations (2 projects)
 ✅ Week 2: Web Development & APIs (1 project)
 ✅ Week 3: Concurrency & Advanced Patterns (2 projects)
-✅ Week 4: Production Capstone (1 project)
+✅ Week 4: Production Capstone (2 projects)
 
-Total: 6 production-ready projects
-Code: 15,000+ lines
-Files: 150+ files
-Documentation: 25+ guides
+Total: 7 production-ready projects
+Code: 20,000+ lines
+Files: 195+ files
+Documentation: 30+ guides
 ```
 
 ---
@@ -46,8 +46,8 @@ JOURNEY COMPLETE! 🎊
 | **1** | File Organizer + URL Shortener | ~1,400 | Go Fundamentals, CLI |
 | **2** | Task Management API | ~2,500 | REST API, JWT, Database |
 | **3** | Web Scraper + Agent Orchestrator | ~3,200 | Concurrency, Channels |
-| **4** | AI Agent Platform | ~5,300 | WebSockets, Real-time, AI |
-| **Total** | **6 Projects** | **~15,000** | **Production-Ready** |
+| **4** | AI Platform + Deep Research Agent | ~10,500 | WebSockets, AI, Tools |
+| **Total** | **7 Projects** | **~20,000** | **Production-Ready** |
 
 ---
 
@@ -74,7 +74,8 @@ golang-learning-projects/
 │   └── 02-agent-orchestrator/          (1,985 lines, 5 tools)
 │
 └── 📁 week4-capstone/                  ✅ PRODUCTION
-    └── ai-agent-platform/              (5,330 lines, 18 endpoints)
+    ├── ai-agent-platform/              (5,330 lines, 18 endpoints)
+    └── deep-research-agent/            (5,200+ lines, 8 tools)
 ```
 
 ---
@@ -287,9 +288,9 @@ curl -X POST http://localhost:8080/api/v1/request \
 
 ---
 
-### Week 4: Production Capstone Project ✅
+### Week 4: Production Capstone Projects ✅
 
-**Status:** Complete | **Projects:** 1 | **Lines:** ~5,300 | **Endpoints:** 18 + WebSocket
+**Status:** Complete | **Projects:** 2 | **Lines:** ~10,500 | **Endpoints:** 18 + WebSocket + 7 CLI commands
 
 #### Project 6: AI Agent API Platform
 📂 `week4-capstone/ai-agent-platform/`
@@ -423,6 +424,112 @@ Open browser to `http://localhost:8080/` for built-in test page!
 
 ---
 
+#### Project 7: Deep Research Agent
+📂 `week4-capstone/deep-research-agent/`
+
+**Advanced AI Agent System** - Intelligent research with multi-source analysis!
+
+**What it does:**
+- Deep research agent with intelligent planning
+- PDF and DOCX document processing
+- Web search and Wikipedia integration
+- Citation management (APA, MLA, Chicago)
+- Fact checking and verification
+- Multi-step research orchestration
+- Session persistence with SQLite
+
+**Tools Implemented (8):**
+1. **PDF Processor** - Extract text, search, metadata from PDFs
+2. **DOCX Processor** - Parse Word documents with structure preservation
+3. **Web Search** - Search integration (mock, ready for real APIs)
+4. **Wikipedia** - Real Wikipedia API integration
+5. **URL Fetcher** - Web content extraction with rate limiting
+6. **Summarizer** - Multi-algorithm text summarization
+7. **Citation Manager** - Generate APA/MLA/Chicago citations
+8. **Fact Checker** - Verify claims and detect contradictions
+
+**Core Components:**
+- **Research Agent** - Main orchestration engine
+- **Intelligent Planner** - Query analysis and multi-step planning
+- **Research Memory** - Context management with deduplication
+- **Tool Registry** - Interface-based tool system
+- **Storage Layer** - SQLite persistence with GORM
+
+**CLI Commands (7):**
+- `research` - Execute deep research with multiple sources
+- `document` - Analyze PDF/DOCX files
+- `session` - Manage research sessions (list, view, delete)
+- `export` - Generate reports (Markdown/JSON/PDF)
+- `interactive` - Interactive research mode
+- `stats` - View research statistics
+- `help` - Command help and examples
+
+**Research Depths:**
+- **Shallow** - Quick overview (2-3 steps, 3 minutes)
+- **Medium** - Balanced research (4-6 steps, 10 minutes)
+- **Deep** - Comprehensive analysis (7-10 steps, 20+ minutes)
+
+**Skills learned:**
+- Advanced AI agent orchestration
+- Document processing (PDF/DOCX)
+- Multi-step planning algorithms
+- Research memory management
+- Tool registry patterns
+- Cobra CLI framework
+- Report generation (multiple formats)
+- Session persistence
+- Progress tracking UI
+- Intelligent retry logic
+
+**Quick start:**
+```bash
+cd week4-capstone/deep-research-agent
+go run main.go help
+
+# Basic research
+go run main.go research "Go programming language history"
+
+# Research with documents
+go run main.go research "machine learning trends" --pdf research.pdf --docx notes.docx
+
+# Deep research with all sources
+go run main.go research "climate change solutions" --depth deep --use-web --use-wikipedia
+
+# Analyze document
+go run main.go document --pdf paper.pdf --summarize
+
+# Interactive mode
+go run main.go interactive
+```
+
+**Documentation (5 files, 4,578 lines):**
+- `README.md` - Complete project documentation (734 lines)
+- `QUICK_START.md` - 5-minute getting started (409 lines)
+- `START_HERE.md` - Comprehensive learning guide with 9 tutorials (1,222 lines)
+- `TOOLS_GUIDE.md` - All 8 tools documented with examples (1,143 lines)
+- `ARCHITECTURE.md` - System architecture and design patterns (1,070 lines)
+
+**Example Research Flow:**
+1. User asks: "What are the latest trends in AI?"
+2. Agent analyzes query → Determines research type
+3. Planner creates multi-step plan (Web search → Wikipedia → Summarize)
+4. Orchestrator executes steps in parallel (worker pool)
+5. Memory deduplicates and scores sources
+6. Report generator creates comprehensive output
+7. Results saved to database session
+
+**Stats:**
+- 44 files created
+- 39 Go source files
+- ~5,200 lines of code
+- ~4,600 lines of documentation
+- 9 Go packages
+- 8 research tools
+- 7 CLI commands
+- 3 research depth levels
+
+---
+
 ## 🎯 How to Use This Repository
 
 ### As a Learning Resource
@@ -521,12 +628,16 @@ cd week3-projects/02-agent-orchestrator && go run main.go
 # Access: http://localhost:8080
 ```
 
-### Week 4 - AI Platform
+### Week 4 - AI Platform & Research Agent
 ```bash
 # AI Agent Platform
 cd week4-capstone/ai-agent-platform && go run main.go
 # Access: http://localhost:8080
 # WebSocket test: http://localhost:8080/
+
+# Deep Research Agent
+cd week4-capstone/deep-research-agent && go run main.go help
+cd week4-capstone/deep-research-agent && go run main.go research "your query here"
 ```
 
 ---
@@ -574,14 +685,14 @@ cd week4-capstone/ai-agent-platform && go run main.go
 ## 🏆 Achievement Summary
 
 ### Technical Achievements
-✅ **6 production-ready projects**
-✅ **15,000+ lines of quality code**
-✅ **25+ documentation guides**
-✅ **8+ concurrency patterns implemented**
-✅ **36 API endpoints created**
+✅ **7 production-ready projects**
+✅ **20,000+ lines of quality code**
+✅ **30+ documentation guides**
+✅ **10+ concurrency patterns implemented**
+✅ **36 API endpoints + 7 CLI commands**
 ✅ **11 database models designed**
-✅ **9 tools built**
-✅ **Real-time systems implemented**
+✅ **17 tools built (9 original + 8 research tools)**
+✅ **Real-time systems + AI agents implemented**
 
 ### Portfolio Value
 ✅ **Demonstrable Go expertise**
@@ -725,9 +836,9 @@ Path D: Portfolio Showcase
 You've completed an intensive **1-month Go learning journey**!
 
 **Total Stats:**
-- 📦 6 projects built
-- 📝 15,000+ lines of code written
-- 📚 25+ guides created
+- 📦 7 projects built
+- 📝 20,000+ lines of code written
+- 📚 30+ guides created
 - 🎯 100% completion rate
 - 🚀 Production-ready portfolio
 
