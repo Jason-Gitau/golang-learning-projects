@@ -29,6 +29,8 @@ func NewResearchDB(dbPath string) (*ResearchDB, error) {
 
 	// Auto-migrate schemas
 	if err := db.AutoMigrate(
+		&models.User{},
+		&models.RateLimit{},
 		&models.ResearchSession{},
 		&models.Document{},
 	); err != nil {
@@ -39,7 +41,7 @@ func NewResearchDB(dbPath string) (*ResearchDB, error) {
 }
 
 // SaveSession saves a research session to the database
-func (r *ResearchDB) SaveSession(query models.ResearchQuery, result *models.ResearchResult, status string) (*models.ResearchSession, error) {
+func (r *ResearchDB) SaveSession(userID string, query models.ResearchQuery, result *models.ResearchResult, status string) (*models.ResearchSession, error) {
 	// Serialize query and result to JSON
 	queryData, err := json.Marshal(query)
 	if err != nil {
@@ -62,6 +64,7 @@ func (r *ResearchDB) SaveSession(query models.ResearchQuery, result *models.Rese
 
 	session := &models.ResearchSession{
 		ID:        uuid.New().String(),
+		UserID:    userID,
 		Query:     query.Query,
 		QueryData: string(queryData),
 		Result:    string(resultData),
@@ -126,10 +129,29 @@ func (r *ResearchDB) GetSession(sessionID string) (*models.ResearchSession, erro
 	return &session, nil
 }
 
-// ListSessions retrieves all research sessions
+// ListSessions retrieves all research sessions (without user filtering - for backward compatibility)
 func (r *ResearchDB) ListSessions(limit, offset int) ([]models.ResearchSession, error) {
 	var sessions []models.ResearchSession
 	query := r.db.Order("created_at DESC")
+
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+
+	if err := query.Find(&sessions).Error; err != nil {
+		return nil, fmt.Errorf("failed to list sessions: %w", err)
+	}
+
+	return sessions, nil
+}
+
+// ListSessionsByUser retrieves research sessions for a specific user
+func (r *ResearchDB) ListSessionsByUser(userID string, limit, offset int) ([]models.ResearchSession, error) {
+	var sessions []models.ResearchSession
+	query := r.db.Where("user_id = ?", userID).Order("created_at DESC")
 
 	if limit > 0 {
 		query = query.Limit(limit)
@@ -183,9 +205,10 @@ func (r *ResearchDB) DeleteOldSessions(maxAge time.Duration) (int64, error) {
 }
 
 // IndexDocument saves a document to the index
-func (r *ResearchDB) IndexDocument(filename, filePath, fileType string, fileSize int64, pageCount int) (*models.Document, error) {
+func (r *ResearchDB) IndexDocument(userID, filename, filePath, fileType string, fileSize int64, pageCount int) (*models.Document, error) {
 	doc := &models.Document{
 		ID:         uuid.New().String(),
+		UserID:     userID,
 		Filename:   filename,
 		FilePath:   filePath,
 		FileType:   fileType,
@@ -226,7 +249,7 @@ func (r *ResearchDB) GetDocumentByFilename(filename string) (*models.Document, e
 	return &doc, nil
 }
 
-// ListDocuments retrieves all indexed documents
+// ListDocuments retrieves all indexed documents (without user filtering - for backward compatibility)
 func (r *ResearchDB) ListDocuments(limit, offset int) ([]models.Document, error) {
 	var docs []models.Document
 	query := r.db.Order("uploaded_at DESC")
@@ -243,6 +266,73 @@ func (r *ResearchDB) ListDocuments(limit, offset int) ([]models.Document, error)
 	}
 
 	return docs, nil
+}
+
+// ListDocumentsByUser retrieves documents for a specific user
+func (r *ResearchDB) ListDocumentsByUser(userID string, limit, offset int) ([]models.Document, error) {
+	var docs []models.Document
+	query := r.db.Where("user_id = ?", userID).Order("uploaded_at DESC")
+
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+
+	if err := query.Find(&docs).Error; err != nil {
+		return nil, fmt.Errorf("failed to list documents: %w", err)
+	}
+
+	return docs, nil
+}
+
+// GetSessionByUser retrieves a session if it belongs to the user
+func (r *ResearchDB) GetSessionByUser(sessionID, userID string) (*models.ResearchSession, error) {
+	var session models.ResearchSession
+	if err := r.db.Where("id = ? AND user_id = ?", sessionID, userID).First(&session).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("session not found or access denied: %s", sessionID)
+		}
+		return nil, fmt.Errorf("failed to get session: %w", err)
+	}
+	return &session, nil
+}
+
+// GetDocumentByUser retrieves a document if it belongs to the user
+func (r *ResearchDB) GetDocumentByUser(docID, userID string) (*models.Document, error) {
+	var doc models.Document
+	if err := r.db.Where("id = ? AND user_id = ?", docID, userID).First(&doc).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("document not found or access denied: %s", docID)
+		}
+		return nil, fmt.Errorf("failed to get document: %w", err)
+	}
+	return &doc, nil
+}
+
+// DeleteSessionByUser deletes a session if it belongs to the user
+func (r *ResearchDB) DeleteSessionByUser(sessionID, userID string) error {
+	result := r.db.Where("id = ? AND user_id = ?", sessionID, userID).Delete(&models.ResearchSession{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete session: %w", result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("session not found or access denied: %s", sessionID)
+	}
+	return nil
+}
+
+// DeleteDocumentByUser deletes a document if it belongs to the user
+func (r *ResearchDB) DeleteDocumentByUser(docID, userID string) error {
+	result := r.db.Where("id = ? AND user_id = ?", docID, userID).Delete(&models.Document{})
+	if result.Error != nil {
+		return fmt.Errorf("failed to delete document: %w", result.Error)
+	}
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("document not found or access denied: %s", docID)
+	}
+	return nil
 }
 
 // DeleteDocument deletes a document by ID

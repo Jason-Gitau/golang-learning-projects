@@ -61,22 +61,32 @@ type StepResult struct {
 
 // Source represents a citation source
 type Source struct {
-	ID          string    `json:"id"`           // Unique source identifier
-	Type        string    `json:"type"`         // "web", "pdf", "docx", "wikipedia"
-	URL         string    `json:"url"`          // Source URL or file path
-	Title       string    `json:"title"`        // Source title
-	Snippet     string    `json:"snippet"`      // Relevant excerpt
-	PageNumber  int       `json:"page_number"`  // For PDFs
-	Section     string    `json:"section"`      // Section/chapter name
-	CitationKey string    `json:"citation_key"` // Unique citation identifier
-	Timestamp   time.Time `json:"timestamp"`    // When retrieved
-	Relevance   float64   `json:"relevance"`    // Relevance score (0-1)
+	ID          string                 `json:"id"`           // Unique source identifier
+	Type        string                 `json:"type"`         // "web", "pdf", "docx", "wikipedia"
+	URL         string                 `json:"url"`          // Source URL or file path
+	Title       string                 `json:"title"`        // Source title
+	Snippet     string                 `json:"snippet"`      // Relevant excerpt
+	PageNumber  int                    `json:"page_number"`  // For PDFs
+	Section     string                 `json:"section"`      // Section/chapter name
+	CitationKey string                 `json:"citation_key"` // Unique citation identifier
+	Timestamp   time.Time              `json:"timestamp"`    // When retrieved
+	Relevance   float64                `json:"relevance"`    // Relevance score (0-1)
+	Author      string                 `json:"author"`       // Author name
+	Publisher   string                 `json:"publisher"`    // Publisher name
+	PublishDate time.Time              `json:"publish_date"` // Publication date
+	AccessDate  time.Time              `json:"access_date"`  // Access date
+	FilePath    string                 `json:"file_path"`    // File path for local documents
+	Content     string                 `json:"content"`      // Full content for documents
+	Excerpt     string                 `json:"excerpt"`      // Excerpt from document
+	Metadata    map[string]interface{} `json:"metadata"`     // Additional metadata
 }
 
 // Finding represents a key research finding
 type Finding struct {
+	ID         string    `json:"id"`         // Unique finding identifier
 	Content    string    `json:"content"`    // The finding text
 	Sources    []Source  `json:"sources"`    // Supporting sources
+	Source     Source    `json:"source"`     // Primary source (for backward compatibility)
 	Confidence float64   `json:"confidence"` // Confidence level (0-1)
 	Category   string    `json:"category"`   // Finding category
 	Keywords   []string  `json:"keywords"`   // Key terms
@@ -102,6 +112,7 @@ type ResearchResult struct {
 // ResearchSession represents a saved research session
 type ResearchSession struct {
 	ID         string          `json:"id" gorm:"primaryKey"`
+	UserID     string          `json:"user_id" gorm:"type:varchar(36);index;not null"` // Owner of this session
 	Query      string          `json:"query" gorm:"type:text"`
 	QueryData  string          `json:"query_data" gorm:"type:text"` // JSON serialized ResearchQuery
 	Result     string          `json:"result" gorm:"type:text"`     // JSON serialized ResearchResult
@@ -115,7 +126,8 @@ type ResearchSession struct {
 // Document represents an indexed document
 type Document struct {
 	ID          string    `json:"id" gorm:"primaryKey"`
-	Filename    string    `json:"filename" gorm:"uniqueIndex"`
+	UserID      string    `json:"user_id" gorm:"type:varchar(36);index;not null"` // Owner of this document
+	Filename    string    `json:"filename"`
 	FilePath    string    `json:"file_path"`
 	FileType    string    `json:"file_type"` // "pdf", "docx"
 	FileSize    int64     `json:"file_size"`
@@ -123,6 +135,11 @@ type Document struct {
 	Indexed     bool      `json:"indexed"`
 	IndexData   string    `json:"index_data" gorm:"type:text"` // JSON metadata
 	UploadedAt  time.Time `json:"uploaded_at"`
+}
+
+// Add composite unique index for user_id + filename
+func (Document) TableName() string {
+	return "documents"
 }
 
 // ResearchProgress represents real-time progress updates

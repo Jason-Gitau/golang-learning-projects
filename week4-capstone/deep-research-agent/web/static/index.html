@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Research Agent</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Login/Register Page -->
+    <div id="auth-page" class="page active">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>🔬 Deep Research Agent</h1>
+                <p>AI-powered research assistant for comprehensive analysis</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form-container" class="auth-form active">
+                <h2>Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" name="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account?
+                    <a href="#" onclick="switchToRegister(); return false;">Register</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form-container" class="auth-form">
+                <h2>Register</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" name="name" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" name="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" name="password" required placeholder="••••••••" minlength="8">
+                        <small>Minimum 8 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" name="confirmPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account?
+                    <a href="#" onclick="switchToLogin(); return false;">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard-page" class="page">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="nav-brand">
+                    <span class="logo">🔬</span>
+                    <span class="brand-name">Research Agent</span>
+                </div>
+                <div class="nav-user">
+                    <span id="user-name-display" class="user-name">User</span>
+                    <button onclick="handleLogout()" class="btn btn-secondary btn-sm">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="new-research">New Research</button>
+            <button class="tab-btn" data-tab="active-research">Active Research</button>
+            <button class="tab-btn" data-tab="sessions">Sessions History</button>
+            <button class="tab-btn" data-tab="documents">Documents</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="container">
+            <!-- New Research Section -->
+            <div id="new-research" class="tab-content active">
+                <div class="section-header">
+                    <h2>Start New Research</h2>
+                    <p>Enter your research query and configure the research parameters</p>
+                </div>
+
+                <form id="research-form" class="research-form">
+                    <div class="form-group">
+                        <label for="research-query">Research Query *</label>
+                        <textarea
+                            id="research-query"
+                            name="query"
+                            rows="4"
+                            required
+                            placeholder="What would you like to research? Be specific for better results.&#10;Example: What are the latest developments in quantum computing in 2024?"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="research-depth">Research Depth</label>
+                            <select id="research-depth" name="depth">
+                                <option value="shallow">Shallow (2-3 minutes)</option>
+                                <option value="medium" selected>Medium (5-10 minutes)</option>
+                                <option value="deep">Deep (15-20 minutes)</option>
+                            </select>
+                            <small>Deeper research provides more comprehensive results</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="research-files">Upload Documents (Optional)</label>
+                            <input
+                                type="file"
+                                id="research-files"
+                                name="files"
+                                multiple
+                                accept=".pdf,.docx"
+                            >
+                            <small>PDF or DOCX files to include in research</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Research Options</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="use_web" checked>
+                                <span>Use Web Search</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="use_wikipedia" checked>
+                                <span>Use Wikipedia</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="fact_check">
+                                <span>Enable Fact Checking</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <span id="submit-text">Start Research</span>
+                        <span id="submit-loading" class="spinner" style="display: none;"></span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Active Research Section -->
+            <div id="active-research" class="tab-content">
+                <div class="section-header">
+                    <h2>Active Research Jobs</h2>
+                    <p>Real-time progress of ongoing research tasks</p>
+                </div>
+
+                <div id="active-jobs-container" class="jobs-container">
+                    <!-- Populated dynamically -->
+                    <div class="empty-state">
+                        <p>No active research jobs</p>
+                        <small>Start a new research to see progress here</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sessions History Section -->
+            <div id="sessions" class="tab-content">
+                <div class="section-header">
+                    <h2>Research Sessions</h2>
+                    <div class="header-actions">
+                        <input type="text" id="sessions-search" placeholder="Search sessions..." class="search-input">
+                        <button onclick="loadSessions()" class="btn btn-secondary">Refresh</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table id="sessions-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Query</th>
+                                <th>Date</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="pagination" class="pagination">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Documents Section -->
+            <div id="documents" class="tab-content">
+                <div class="section-header">
+                    <h2>Uploaded Documents</h2>
+                    <button onclick="showUploadModal()" class="btn btn-primary">Upload Documents</button>
+                </div>
+
+                <div id="documents-grid" class="documents-grid">
+                    <!-- Populated dynamically -->
+                    <div class="empty-state">
+                        <p>No documents uploaded</p>
+                        <small>Upload PDF or DOCX files to use in your research</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Details Modal -->
+    <div id="session-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Research Results</h3>
+                <button onclick="closeModal('session-modal')" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="session-details">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="exportSession('markdown')" class="btn btn-secondary">Export as Markdown</button>
+                <button onclick="exportSession('json')" class="btn btn-secondary">Export as JSON</button>
+                <button onclick="closeModal('session-modal')" class="btn btn-primary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Documents Modal -->
+    <div id="upload-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload Documents</h3>
+                <button onclick="closeModal('upload-modal')" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="upload-documents-form">
+                    <div class="form-group">
+                        <label>Select Files</label>
+                        <input
+                            type="file"
+                            id="upload-files-input"
+                            name="files"
+                            multiple
+                            accept=".pdf,.docx"
+                            required
+                        >
+                        <small>You can select multiple PDF or DOCX files</small>
+                    </div>
+                    <div id="file-preview" class="file-preview">
+                        <!-- File list preview -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeModal('upload-modal')" class="btn btn-secondary">Cancel</button>
+                <button onclick="uploadDocuments()" class="btn btn-primary">Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/research.js"></script>
+    <script src="/static/js/websocket.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

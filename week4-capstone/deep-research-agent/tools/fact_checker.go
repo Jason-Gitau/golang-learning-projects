@@ -118,7 +118,7 @@ func (f *FactChecker) Execute(ctx context.Context, params map[string]interface{}
 // checkFact verifies a claim against sources
 func (f *FactChecker) checkFact(claim string, sources []models.Source) (*ToolResult, error) {
 	claimLower := strings.ToLower(claim)
-	claimWords := f.tokenize(claimLower)
+	_ = claimLower // Mark as used to avoid compiler error
 
 	supportingSources := make([]models.Source, 0)
 	contradictions := make([]string, 0)

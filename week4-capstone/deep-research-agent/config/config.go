@@ -9,9 +9,12 @@ import (
 
 // Config represents the complete application configuration
 type Config struct {
-	Agent   AgentConfig   `json:"agent"`
-	Tools   ToolsConfig   `json:"tools"`
-	Storage StorageConfig `json:"storage"`
+	Agent      AgentConfig      `json:"agent"`
+	Tools      ToolsConfig      `json:"tools"`
+	Storage    StorageConfig    `json:"storage"`
+	API        APIConfig        `json:"api"`
+	Auth       AuthConfig       `json:"auth"`
+	RateLimit  RateLimitConfig  `json:"rate_limit"`
 }
 
 // AgentConfig contains configuration for the research agent
@@ -51,6 +54,33 @@ type StorageConfig struct {
 	DocumentsPath   string `json:"documents_path"`
 }
 
+// APIConfig contains configuration for the API server
+type APIConfig struct {
+	Enabled      bool   `json:"enabled"`
+	Host         string `json:"host"`
+	Port         int    `json:"port"`
+	EnableCORS   bool   `json:"enable_cors"`
+	EnableSwagger bool  `json:"enable_swagger"`
+	TrustedProxies []string `json:"trusted_proxies"`
+}
+
+// AuthConfig contains authentication configuration
+type AuthConfig struct {
+	JWTSecret      string        `json:"-"` // Load from env, never save to file
+	TokenExpiry    time.Duration `json:"token_expiry"`
+	RefreshExpiry  time.Duration `json:"refresh_expiry"`
+	EnableAuth     bool          `json:"enable_auth"`
+}
+
+// RateLimitConfig contains rate limiting configuration
+type RateLimitConfig struct {
+	Enabled            bool          `json:"enabled"`
+	MaxRequestsPerHour int           `json:"max_requests_per_hour"`
+	MaxConcurrentJobs  int           `json:"max_concurrent_jobs"`
+	WindowDuration     time.Duration `json:"window_duration"`
+	CleanupInterval    time.Duration `json:"cleanup_interval"`
+}
+
 // DefaultConfig returns the default configuration
 func DefaultConfig() *Config {
 	homeDir, _ := os.UserHomeDir()
@@ -86,6 +116,27 @@ func DefaultConfig() *Config {
 			MaxSessionAge:   30 * 24 * time.Hour, // 30 days
 			CleanupInterval: 24 * time.Hour,       // Daily cleanup
 			DocumentsPath:   filepath.Join(dataDir, "documents"),
+		},
+		API: APIConfig{
+			Enabled:        false, // API disabled by default
+			Host:           "0.0.0.0",
+			Port:           8080,
+			EnableCORS:     true,
+			EnableSwagger:  true,
+			TrustedProxies: []string{},
+		},
+		Auth: AuthConfig{
+			JWTSecret:     os.Getenv("JWT_SECRET"), // Load from environment
+			TokenExpiry:   24 * time.Hour,          // 24 hours
+			RefreshExpiry: 7 * 24 * time.Hour,      // 7 days
+			EnableAuth:    true,
+		},
+		RateLimit: RateLimitConfig{
+			Enabled:            true,
+			MaxRequestsPerHour: 100,
+			MaxConcurrentJobs:  10,
+			WindowDuration:     1 * time.Hour,
+			CleanupInterval:    10 * time.Minute,
 		},
 	}
 }
