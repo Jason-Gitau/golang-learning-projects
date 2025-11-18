@@ -1,0 +1,14 @@
+{
+  "urls": [
+    "https://go.dev/",
+    "https://go.dev/doc/",
+    "https://go.dev/blog/",
+    "https://pkg.go.dev/",
+    "https://go.dev/learn/",
+    "https://go.dev/solutions/",
+    "https://github.com/golang/go",
+    "https://golang.org/doc/effective_go",
+    "https://gobyexample.com/",
+    "https://tour.golang.org/"
+  ]
+}
