@@ -137,7 +137,7 @@ func (u *URLFetcher) fetchPage(doc *goquery.Document, urlStr string, resp *http.
 	}
 
 	// Extract metadata
-	metadata := u.getMetadataMap(doc)
+	metadataStrings := u.getMetadataMap(doc)
 
 	// Extract main content
 	cleanText := u.extractCleanText(doc)
@@ -145,12 +145,18 @@ func (u *URLFetcher) fetchPage(doc *goquery.Document, urlStr string, resp *http.
 	// Get raw HTML
 	html, _ := doc.Html()
 
+	// Convert metadata to map[string]interface{}
+	metadata := make(map[string]interface{})
+	for k, v := range metadataStrings {
+		metadata[k] = v
+	}
+
 	page := &WebPage{
 		URL:       urlStr,
 		Title:     title,
 		Content:   html,
 		CleanText: cleanText,
-		Metadata:  metadata,
+		Metadata:  metadataStrings,
 	}
 
 	source := models.Source{

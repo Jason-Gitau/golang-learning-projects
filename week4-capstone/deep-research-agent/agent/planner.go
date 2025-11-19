@@ -235,7 +235,7 @@ func (p *ResearchPlanner) createMultiSourceSteps(query models.ResearchQuery, sta
 	startNum += len(docSteps)
 
 	// Phase 2: Web research (parallel, can run concurrently)
-	webStep := startNum
+	_ = startNum // webStep for future use
 	if query.UseWeb && p.toolRegistry.HasTool("web_search") {
 		steps = append(steps, models.ResearchStep{
 			StepNumber: startNum,

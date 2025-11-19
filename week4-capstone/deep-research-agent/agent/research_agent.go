@@ -92,7 +92,7 @@ func (a *ResearchAgent) Research(
 
 	// Save initial session to database if requested
 	if options.SaveSession && a.Storage != nil {
-		session, err := a.Storage.SaveSession(query, nil, "in_progress")
+		session, err := a.Storage.SaveSession("", query, nil, "in_progress")
 		if err != nil {
 			log.Printf("Warning: Failed to save initial session: %v", err)
 		} else {
@@ -228,7 +228,7 @@ func (a *ResearchAgent) IndexDocument(
 	if a.Storage == nil {
 		return nil, fmt.Errorf("storage not configured")
 	}
-	return a.Storage.IndexDocument(filename, filePath, fileType, fileSize, pageCount)
+	return a.Storage.IndexDocument("", filename, filePath, fileType, fileSize, pageCount)
 }
 
 // ListDocuments retrieves indexed documents
