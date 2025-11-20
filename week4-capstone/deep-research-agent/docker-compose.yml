@@ -1,0 +1,157 @@
+version: '3.8'
+
+# =================================================================
+# Deep Research Agent - Development & Testing Stack
+# =================================================================
+# Services:
+#   - research-agent: Main application (API + WebSocket)
+#   - prometheus: Metrics collection
+#   - grafana: Metrics visualization
+#
+# Ports:
+#   - 8080: Research Agent API
+#   - 9090: Prometheus UI
+#   - 3000: Grafana dashboard
+# =================================================================
+
+services:
+  # =================================================================
+  # Research Agent - Main Application
+  # =================================================================
+  research-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: research-agent
+    ports:
+      - "8080:8080"  # API and Web UI
+    environment:
+      # Security
+      - JWT_SECRET=${JWT_SECRET:-please-change-this-secret-in-production}
+
+      # Server configuration
+      - GIN_MODE=release
+      - PORT=8080
+
+      # Database
+      - DATABASE_PATH=/app/data/research.db
+
+      # File storage
+      - UPLOAD_DIR=/app/uploads/files
+      - EXPORT_DIR=/app/exports
+
+      # Agent configuration
+      - RESEARCH_AGENT_MAX_WORKERS=10
+      - RESEARCH_AGENT_CONCURRENT_TOOLS=5
+
+      # Rate limiting
+      - RESEARCH_AGENT_MAX_REQUESTS_PER_HOUR=100
+      - RESEARCH_AGENT_MAX_CONCURRENT_JOBS=10
+    volumes:
+      # Persistent data storage
+      - ./docker-data/database:/app/data
+      - ./docker-data/uploads:/app/uploads
+      - ./docker-data/exports:/app/exports
+      - ./docker-data/config:/app/config
+    networks:
+      - research-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.docker.compose.project=deep-research-agent"
+      - "app=research-agent"
+
+  # =================================================================
+  # Prometheus - Metrics Collection
+  # =================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: research-prometheus
+    ports:
+      - "9090:9090"  # Prometheus UI
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - research-net
+    restart: unless-stopped
+    depends_on:
+      - research-agent
+    labels:
+      - "com.docker.compose.project=deep-research-agent"
+      - "app=prometheus"
+
+  # =================================================================
+  # Grafana - Metrics Visualization
+  # =================================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: research-grafana
+    ports:
+      - "3000:3000"  # Grafana UI
+    environment:
+      # Admin credentials (change in production!)
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+      # Server settings
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_INSTALL_PLUGINS=
+
+      # Anonymous access (for easy learning - disable in production)
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    networks:
+      - research-net
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    labels:
+      - "com.docker.compose.project=deep-research-agent"
+      - "app=grafana"
+
+# =================================================================
+# Networks
+# =================================================================
+networks:
+  research-net:
+    driver: bridge
+    name: research-agent-network
+
+# =================================================================
+# Volumes for persistent data
+# =================================================================
+volumes:
+  prometheus-data:
+    name: research-prometheus-data
+  grafana-data:
+    name: research-grafana-data
+
+# =================================================================
+# Usage:
+# =================================================================
+# Start:   docker-compose up -d
+# Stop:    docker-compose down
+# Logs:    docker-compose logs -f research-agent
+# Rebuild: docker-compose up -d --build
+#
+# Access:
+#   - Research Agent: http://localhost:8080
+#   - Prometheus:     http://localhost:9090
+#   - Grafana:        http://localhost:3000 (admin/admin)
+# =================================================================
