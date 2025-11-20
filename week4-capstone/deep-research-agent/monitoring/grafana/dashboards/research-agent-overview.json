@@ -1,0 +1,99 @@
+{
+  "dashboard": {
+    "title": "Deep Research Agent - Overview",
+    "tags": ["research-agent", "api", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "panels": [
+      {
+        "id": 1,
+        "title": "Application Status",
+        "type": "stat",
+        "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+        "targets": [
+          {
+            "expr": "up{job=\"research-agent\"}",
+            "legendFormat": "Status"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "textMode": "value_and_name"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"type": "value", "value": "1", "text": "UP"},
+              {"type": "value", "value": "0", "text": "DOWN"}
+            ],
+            "thresholds": {
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 1, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Health Check Response Time",
+        "type": "graph",
+        "gridPos": {"x": 6, "y": 0, "w": 9, "h": 4},
+        "targets": [
+          {
+            "expr": "rate(promhttp_metric_handler_requests_total{job=\"research-agent\"}[5m])",
+            "legendFormat": "Request Rate"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Quick Stats",
+        "type": "row",
+        "gridPos": {"x": 0, "y": 4, "w": 24, "h": 1}
+      },
+      {
+        "id": 4,
+        "title": "System Information",
+        "type": "table",
+        "gridPos": {"x": 0, "y": 5, "w": 24, "h": 6},
+        "targets": [
+          {
+            "expr": "up{job=\"research-agent\"}",
+            "format": "table"
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {},
+              "renameByName": {
+                "instance": "Instance",
+                "job": "Job",
+                "service": "Service"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "templating": {
+      "list": []
+    },
+    "annotations": {
+      "list": []
+    },
+    "links": []
+  },
+  "overwrite": true
+}

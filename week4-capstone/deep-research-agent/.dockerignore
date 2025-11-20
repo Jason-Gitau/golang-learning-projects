@@ -1,0 +1,64 @@
+# Git files
+.git
+.gitignore
+.gitattributes
+
+# Documentation (not needed in image)
+*.md
+docs/
+examples/
+
+# Docker files
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Build artifacts
+research-agent
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Data directories (mounted as volumes)
+docker-data/
+data/
+uploads/
+exports/
+*.db
+*.db-shm
+*.db-wal
+
+# Monitoring configs (mounted separately)
+monitoring/
+prometheus/
+grafana/
+
+# Configuration files (use environment variables instead)
+config.json
+.env
+.env.*
+
+# Test files
+*_test.go
+test_*.go
+test_api.sh
+testdata/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.log
+
+# Dependencies (will be downloaded in build)
+vendor/
